@@ -2,7 +2,8 @@
 
 var request = require('supertest');
 var load = require('./fixtures/load');
-var bootevent = require('../lib/bootevent');
+var bootevent = require('../lib/server/bootevent');
+var language = require('../lib/language')();
 require('should');
 
 describe('Entries REST api', function ( ) {
@@ -17,9 +18,9 @@ describe('Entries REST api', function ( ) {
     this.app = require('express')( );
     this.app.enable('api');
     var self = this;
-    bootevent(env).boot(function booted (ctx) {
+    bootevent(env, language).boot(function booted (ctx) {
       self.app.use('/', entries(self.app, self.wares, ctx));
-      self.archive = require('../lib/entries')(env, ctx);
+      self.archive = require('../lib/server/entries')(env, ctx);
 
       var creating = load('json');
       creating.push({type: 'sgv', sgv: 100, date: Date.now()});
